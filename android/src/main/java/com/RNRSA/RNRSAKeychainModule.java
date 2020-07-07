@@ -333,4 +333,26 @@ public class RNRSAKeychainModule extends ReactContextBaseJavaModule {
       }
     });
   }
+
+  @ReactMethod
+  public void getPrivateKey(final String keyTag, final Promise promise) {
+    AsyncTask.execute(new Runnable() {
+      @Override
+      public void run() {
+        WritableNativeMap keys = new WritableNativeMap();
+
+        try {
+          RSA rsa = new RSA(keyTag);
+          String privateKey = rsa.getPrivateKey();
+          if (privateKey != null) {
+            promise.resolve(privateKey);
+          } else {
+            promise.reject("Error", "Missing private key for that keyTag");
+          }
+        } catch (Exception e) {
+          promise.reject("Error", e.getMessage());
+        }
+      }
+    });
+  }
 }
