@@ -341,7 +341,7 @@ public class RSA {
 
         KeyPair keyPair = kpg.genKeyPair();
         this.publicKey = keyPair.getPublic();
-
+        this.privateKey = keyPair.getPrivate();
     }
 
     @TargetApi(18)
