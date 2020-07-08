@@ -317,8 +317,6 @@ public class RNRSAKeychainModule extends ReactContextBaseJavaModule {
     AsyncTask.execute(new Runnable() {
       @Override
       public void run() {
-        WritableNativeMap keys = new WritableNativeMap();
-
         try {
           RSA rsa = new RSA(keyTag);
           String publicKey = rsa.getPublicKey();
@@ -339,8 +337,6 @@ public class RNRSAKeychainModule extends ReactContextBaseJavaModule {
     AsyncTask.execute(new Runnable() {
       @Override
       public void run() {
-        WritableNativeMap keys = new WritableNativeMap();
-
         try {
           RSA rsa = new RSA(keyTag);
           String privateKey = rsa.getPrivateKey();
@@ -348,6 +344,26 @@ public class RNRSAKeychainModule extends ReactContextBaseJavaModule {
             promise.resolve(privateKey);
           } else {
             promise.reject("Error", "Missing private key for that keyTag");
+          }
+        } catch (Exception e) {
+          promise.reject("Error", e.getMessage());
+        }
+      }
+    });
+  }
+
+  @ReactMethod
+  public void getBothKeys(final String keyTag, final Promise promise) {
+    AsyncTask.execute(new Runnable() {
+      @Override
+      public void run() {
+        try {
+          RSA rsa = new RSA(keyTag);
+          String bothKeys = rsa.getBothKeys(keyTag);
+          if (bothKeys != null) {
+            promise.resolve(bothKeys);
+          } else {
+            promise.reject("Error", "Missing keys for that keyTag");
           }
         } catch (Exception e) {
           promise.reject("Error", e.getMessage());

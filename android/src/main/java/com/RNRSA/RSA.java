@@ -116,6 +116,21 @@ public class RSA {
         return dataToPem(PRIVATE_HEADER, pkcs1PrivateKey);
     }
 
+    public String getBothKeys(String keyTag) throws IOException {
+        KeyStore keyStore = KeyStore.getInstance("AndroidKeyStore");
+        keyStore.load(null);
+        KeyStore.PrivateKeyEntry privateKeyEntry = (KeyStore.PrivateKeyEntry) keyStore.getEntry(keyTag, null);
+        
+        if (privateKeyEntry != null) {
+            byte[] pkcs1PrivateKey = privateKeyToPkcs1(privateKeyEntry.getPrivateKey());
+            byte[] pkcs1PublicKey = publicKeyToPkcs1(privateKeyEntry.getCertificate().getPublicKey());
+            String priv = dataToPem(PRIVATE_HEADER, pkcs1PrivateKey);
+            String pub = dataToPem(PUBLIC_HEADER, pkcs1PublicKey);
+            return priv + "::" + pub
+        }
+        return ""
+    }
+
     public void setPublicKey(String publicKey) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
         this.publicKey = pkcs1ToPublicKey(publicKey);
     }
